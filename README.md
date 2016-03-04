@@ -2,7 +2,7 @@
 
 This plugin collects statistical and diagnostic information about each InfluxDB node. This information can be very useful to assist with troubleshooting and performance analysis of the database itself.
 
-This plugin gather InfluxDB internal system monitoring information in response to commands `SHOW STATS` and `SHOW DIAGNOSTICS`.
+This plugin has ability to gather InfluxDB internal system monitoring information in response to the following commands: `SHOW STATS` and `SHOW DIAGNOSTICS`.
 															
 The plugin is used in the [snap framework] (http://github.com/intelsdi-x/snap).				
 
@@ -54,13 +54,13 @@ This builds the plugin in `/build/rootfs/`
 
 To learn more about influxDB System Monitoring, visit:
 
-* [InfluxDB Server Monitoring doc] (https://docs.influxdata.com/influxdb/v0.9/administration/statistics/)
+* [InfluxDB Server Monitoring Documentation] (https://docs.influxdata.com/influxdb/v0.9/administration/statistics/)
 * [InfluxDB Server Monitoring README] (https://github.com/influxdata/influxdb/blob/master/monitor/README.md)
 * blog post ["How to use the show stats command to monitor InfluxDB"](https://influxdata.com/blog/how-to-use-the-show-stats-command-and-the-_internal-database-to-monitor-influxdb/)
 
 ### Global Config
 
-Global configuration files are described in snap's documentation. For this plugin section "influxdb" in "collector" specifing the following options needs to be added (see [exemplary configs file](examples/configs/snap-config-sample.json)):
+Global configuration file is described in snap's documentation. For this plugin section "influxdb" in "collector" specifing the following options needs to be added (see [exemplary configs file](examples/configs/snap-config-sample.json)):
 
 Name 	  	| Data Type | Description
 ------------|-----------|-----------------------
@@ -93,11 +93,11 @@ Metric Name | Description
 /intel/influxdb/diagn/system/started |
 /intel/influxdb/diagn/system/uptime |
 | |
-/intel/influxdb/stat/engine/<engine_id>/blks_write |
-/intel/influxdb/stat/engine/<engine_id>/blks_write_bytes |
-/intel/influxdb/stat/engine/<engine_id>/blks_write_bytes_c |
-/intel/influxdb/stat/engine/<engine_id>/points_write |
-/intel/influxdb/stat/engine/<engine_id>/points_write_dedupe |
+/intel/influxdb/stat/engine/\<engine_id>/blks_write |
+/intel/influxdb/stat/engine/\<engine_id>/blks_write_bytes |
+/intel/influxdb/stat/engine/\<engine_id>/blks_write_bytes_c |
+/intel/influxdb/stat/engine/\<engine_id>/points_write |
+/intel/influxdb/stat/engine/\<engine_id>/points_write_dedupe |
 /intel/influxdb/stat/httpd/auth_fail |
 /intel/influxdb/stat/httpd/ping_req |
 /intel/influxdb/stat/httpd/points_written_ok |
@@ -121,10 +121,10 @@ Metric Name | Description
 /intel/influxdb/stat/runtime/PauseTotalNs |
 /intel/influxdb/stat/runtime/Sys |
 /intel/influxdb/stat/runtime/TotalAlloc |
-/intel/influxdb/stat/shard/<shard_id>/fields_create |
-/intel/influxdb/stat/shard/<shard_id>/series_create |
-/intel/influxdb/stat/shard/<shard_id>/write_points_ok |
-/intel/influxdb/stat/shard/<shard_id>/write_req |
+/intel/influxdb/stat/shard/\<shard_id>/fields_create |
+/intel/influxdb/stat/shard/\<shard_id>/series_create |
+/intel/influxdb/stat/shard/\<shard_id>/write_points_ok |
+/intel/influxdb/stat/shard/\<shard_id>/write_req |
 /intel/influxdb/stat/write/point_req |
 /intel/influxdb/stat/write/point_req_local |
 /intel/influxdb/stat/write/req |
@@ -132,9 +132,9 @@ Metric Name | Description
 
 The list of available metrics might be vary depending on the influxdb version or the system configuration.
 
-Diagnostics information are gathered only once at the beggining of collecting process, because they are constant during running the influxdb process.
+Diagnostics information are gathered only once at the beginning of collecting process, because they are constant during running the influxdb process.
 
-In task manifest there are declaration of metrics names which will be collected and an interval (see [exemplary task manifest] (examples/tasks/influxdb-file.json)). By default metrics are gathered once per second.
+In task manifest there are declaration of metrics names which will be collected and value of an interval (see [exemplary task manifest] (examples/tasks/influxdb-file.json)). By default metrics are gathered once per second.
 
 There is a possibility to use asterisk (*) in metrics names (in all levels), for example:
  - `/intel/influxdb/*` means that all available metrics representing statistical and diagnostic information will be collected
