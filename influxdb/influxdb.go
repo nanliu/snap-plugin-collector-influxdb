@@ -20,7 +20,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
 	"time"
 
@@ -36,7 +35,7 @@ const (
 	// Name of plugin
 	Name = "influxdb"
 	// Version of plugin
-	Version = 1
+	Version = 2
 	// Type of plugin
 	Type = plugin.CollectorPluginType
 
@@ -90,8 +89,6 @@ func (ic *InfluxdbCollector) GetMetricTypes(cfg plugin.PluginConfigType) ([]plug
 		mts = append(mts, plugin.PluginMetricType{Namespace_: splitNamespace(ns), Tags_: dat.tags})
 	}
 
-	// whildcards support
-	mts = append(mts, getWildCardMetrics(mts)...)
 	return mts, nil
 }
 
@@ -108,31 +105,16 @@ func (ic *InfluxdbCollector) CollectMetrics(mts []plugin.PluginMetricType) ([]pl
 	ic.getStatistics() // get statistical information
 
 	for _, m := range mts {
-
-		// prepare namespace to regular expression (wildcards support)
-		name := joinNamespace(m.Namespace())
-		name = strings.Replace(name, "/", "\\/", -1)
-		name = strings.Replace(name, "*", ".*", -1)
-		regex := regexp.MustCompile("^" + name + "$")
-
-		for key := range ic.data {
-			match := regex.FindStringSubmatch(key)
-
-			if match == nil {
-				continue
+		if dat, ok := ic.data[joinNamespace(m.Namespace())]; ok {
+			metric := plugin.PluginMetricType{
+				Namespace_: m.Namespace(),
+				Data_:      dat.value,
+				Source_:    hostname,
+				Timestamp_: time.Now(),
+				Tags_:      dat.tags,
 			}
 
-			if dat, ok := ic.data[key]; ok {
-				metric := plugin.PluginMetricType{
-					Namespace_: splitNamespace(key),
-					Data_:      dat.value,
-					Source_:    hostname,
-					Timestamp_: time.Now(),
-					Tags_:      dat.tags,
-				}
-
-				metrics = append(metrics, metric)
-			}
+			metrics = append(metrics, metric)
 		}
 	}
 
@@ -204,25 +186,6 @@ func (ic *InfluxdbCollector) getData(kind int) error {
 	}
 
 	return nil
-}
-
-// getWildCardMetrics extends list of metrics `mts` about wildcard metrics on each level; only asterisk (*) is supported for now
-func getWildCardMetrics(mts []plugin.PluginMetricType) []plugin.PluginMetricType {
-	extendedMts := []plugin.PluginMetricType{}
-	prefixLen := len(prefix)
-
-	for _, m := range mts {
-		mNameLen := len(m.Namespace())
-		for index := range m.Namespace()[prefixLen:mNameLen] {
-			ns := make([]string, mNameLen)
-			copy(ns, m.Namespace())
-
-			metric := append(ns[:prefixLen+index], "*")
-			extendedMts = append(extendedMts, plugin.PluginMetricType{Namespace_: metric, Tags_: m.Tags()})
-		}
-	}
-
-	return extendedMts
 }
 
 // handleErr handles critical error indicated with an abnormal state of plugin

@@ -75,9 +75,13 @@ func (m *Monitor) InitURLs(settings map[string]interface{}) error {
 
 // createURL returns URL structure created base on `sets` (keeps info about hostname, port, etc.) and query state
 func createURL(sets map[string]interface{}, query string) (*url.URL, error) {
+	p, ok := sets["port"].(int)
+	if !ok {
+		return nil, fmt.Errorf("Invalid port value")
+	}
 	u, err := url.Parse(fmt.Sprintf("http://%s:%d/query?u=%s&p=%s&pretty=true",
 		sets["host"].(string),
-		sets["port"].(int),
+		p,
 		sets["user"].(string),
 		sets["password"].(string),
 	))

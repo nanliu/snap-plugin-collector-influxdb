@@ -14,7 +14,6 @@ if [[ $TEST_SUITE == "unit" ]]; then
 	go get github.com/axw/gocov/gocov
 	go get github.com/mattn/goveralls
 	go get -u github.com/golang/lint/golint
-	go get golang.org/x/tools/cmd/vet
 	go get golang.org/x/tools/cmd/goimports
 	go get github.com/smartystreets/goconvey/convey
 	go get github.com/stretchr/testify/mock
@@ -43,8 +42,6 @@ if [[ $TEST_SUITE == "unit" ]]; then
 	# echo "golint"
 	# golint ./...
 
-	echo "go vet"
-	go vet $VET_DIRS
 	# go test -race ./... - Lets disable for now
 
 	# Run test coverage on each subdirectories and merge the coverage profile.

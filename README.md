@@ -136,12 +136,6 @@ Diagnostics information are gathered only once at the beginning of collecting pr
 
 In task manifest there are declaration of metrics names which will be collected and value of an interval (see [exemplary task manifest] (examples/tasks/influxdb-file.json)). By default metrics are gathered once per second.
 
-There is a possibility to use asterisk (*) in metrics names (in all levels), for example:
- - `/intel/influxdb/*` means that all available metrics representing statistical and diagnostic information will be collected
- - `/intel/influxdb/stat/*` means that all metrics representing statistical information will be collected
- - `/intel/influxdb/stat/httpd/*` means that only metrics for module `httpd` will be collected (i.e.: auth_fail, req, ping_req, query_req, query_resp_bytes, write_req, write_req_bytes, points_written_ok)
-
-
 ### Examples
 
 Example of running snap influxdb collector and writing data to file.
@@ -156,7 +150,7 @@ Load snap influxdb collector plugin:
 $ snapctl plugin load $SNAP_INFLUXDB_COLLECTOR_PLUGIN_DIR/build/rootfs/snap-plugin-collector-influxdb
 Plugin loaded
 Name: influxdb
-Version: 1
+Version: 2
 Type: collector
 Signed: false
 Loaded Time: Fri, 26 Feb 2016 09:09:03 UTC
@@ -166,79 +160,63 @@ See all available metrics:
 $ snapctl metric list
 
 NAMESPACE                                                VERSIONS
-/intel/influxdb/*                                        1
-/intel/influxdb/diagn/*                                  1
-/intel/influxdb/diagn/build/*                            1
-/intel/influxdb/diagn/build/Branch                       1
-/intel/influxdb/diagn/build/Commit                       1
-/intel/influxdb/diagn/build/Version                      1
-/intel/influxdb/diagn/network/*                          1
-/intel/influxdb/diagn/network/hostname                   1
-/intel/influxdb/diagn/runtime/*                          1
-/intel/influxdb/diagn/runtime/GOARCH                     1
-/intel/influxdb/diagn/runtime/GOMAXPROCS                 1
-/intel/influxdb/diagn/runtime/GOOS                       1
-/intel/influxdb/diagn/runtime/version                    1
-/intel/influxdb/diagn/system/*                           1
-/intel/influxdb/diagn/system/PID                         1
-/intel/influxdb/diagn/system/currentTime                 1
-/intel/influxdb/diagn/system/started                     1
-/intel/influxdb/diagn/system/uptime                      1
-/intel/influxdb/stat/*                                   1
-/intel/influxdb/stat/engine/*                            1
-/intel/influxdb/stat/engine/1/*                          1
-/intel/influxdb/stat/engine/1/blks_write                 1
-/intel/influxdb/stat/engine/1/blks_write_bytes           1
-/intel/influxdb/stat/engine/1/blks_write_bytes_c         1
-/intel/influxdb/stat/engine/1/points_write               1
-/intel/influxdb/stat/engine/1/points_write_dedupe        1
-/intel/influxdb/stat/engine/2/*                          1
-/intel/influxdb/stat/engine/2/blks_write                 1
-/intel/influxdb/stat/engine/2/blks_write_bytes           1
-/intel/influxdb/stat/engine/2/blks_write_bytes_c         1
-/intel/influxdb/stat/engine/2/points_write               1
-/intel/influxdb/stat/engine/2/points_write_dedupe        1
-/intel/influxdb/stat/httpd/*                             1
-/intel/influxdb/stat/httpd/auth_fail                     1
-/intel/influxdb/stat/httpd/ping_req                      1
-/intel/influxdb/stat/httpd/points_written_ok             1
-/intel/influxdb/stat/httpd/query_req                     1
-/intel/influxdb/stat/httpd/query_resp_bytes              1
-/intel/influxdb/stat/httpd/req                           1
-/intel/influxdb/stat/httpd/write_req                     1
-/intel/influxdb/stat/httpd/write_req_bytes               1
-/intel/influxdb/stat/runtime/*                           1
-/intel/influxdb/stat/runtime/Alloc                       1
-/intel/influxdb/stat/runtime/Frees                       1
-/intel/influxdb/stat/runtime/HeapAlloc                   1
-/intel/influxdb/stat/runtime/HeapIdle                    1
-/intel/influxdb/stat/runtime/HeapInUse                   1
-/intel/influxdb/stat/runtime/HeapObjects                 1
-/intel/influxdb/stat/runtime/HeapReleased                1
-/intel/influxdb/stat/runtime/HeapSys                     1
-/intel/influxdb/stat/runtime/Lookups                     1
-/intel/influxdb/stat/runtime/Mallocs                     1
-/intel/influxdb/stat/runtime/NumGC                       1
-/intel/influxdb/stat/runtime/NumGoroutine                1
-/intel/influxdb/stat/runtime/PauseTotalNs                1
-/intel/influxdb/stat/runtime/Sys                         1
-/intel/influxdb/stat/runtime/TotalAlloc                  1
-/intel/influxdb/stat/shard/*                             1
-/intel/influxdb/stat/shard/1/*                           1
-/intel/influxdb/stat/shard/1/fields_create               1
-/intel/influxdb/stat/shard/1/series_create               1
-/intel/influxdb/stat/shard/1/write_points_ok             1
-/intel/influxdb/stat/shard/1/write_req                   1
-/intel/influxdb/stat/shard/2/*                           1
-/intel/influxdb/stat/shard/2/fields_create               1
-/intel/influxdb/stat/shard/2/series_create               1
-/intel/influxdb/stat/shard/2/write_points_ok             1
-/intel/influxdb/stat/shard/2/write_req                   1
-/intel/influxdb/stat/write/*                             1
-/intel/influxdb/stat/write/point_req                     1
-/intel/influxdb/stat/write/point_req_local               1
-/intel/influxdb/stat/write/req                           1
-/intel/influxdb/stat/write/write_ok                      1
+/intel/influxdb/diagn/build/Branch                       2
+/intel/influxdb/diagn/build/Commit                       2
+/intel/influxdb/diagn/build/Version                      2
+/intel/influxdb/diagn/network/hostname                   2
+/intel/influxdb/diagn/runtime/GOARCH                     2
+/intel/influxdb/diagn/runtime/GOMAXPROCS                 2
+/intel/influxdb/diagn/runtime/GOOS                       2
+/intel/influxdb/diagn/runtime/version                    2
+/intel/influxdb/diagn/system/PID                         2
+/intel/influxdb/diagn/system/currentTime                 2
+/intel/influxdb/diagn/system/started                     2
+/intel/influxdb/diagn/system/uptime                      2
+/intel/influxdb/stat/engine/1/blks_write                 2
+/intel/influxdb/stat/engine/1/blks_write_bytes           2
+/intel/influxdb/stat/engine/1/blks_write_bytes_c         2
+/intel/influxdb/stat/engine/1/points_write               2
+/intel/influxdb/stat/engine/1/points_write_dedupe        2
+/intel/influxdb/stat/engine/2/blks_write                 2
+/intel/influxdb/stat/engine/2/blks_write_bytes           2
+/intel/influxdb/stat/engine/2/blks_write_bytes_c         2
+/intel/influxdb/stat/engine/2/points_write               2
+/intel/influxdb/stat/engine/2/points_write_dedupe        2
+/intel/influxdb/stat/httpd/auth_fail                     2
+/intel/influxdb/stat/httpd/ping_req                      2
+/intel/influxdb/stat/httpd/points_written_ok             2
+/intel/influxdb/stat/httpd/query_req                     2
+/intel/influxdb/stat/httpd/query_resp_bytes              2
+/intel/influxdb/stat/httpd/req                           2
+/intel/influxdb/stat/httpd/write_req                     2
+/intel/influxdb/stat/httpd/write_req_bytes               2
+/intel/influxdb/stat/runtime/Alloc                       2
+/intel/influxdb/stat/runtime/Frees                       2
+/intel/influxdb/stat/runtime/HeapAlloc                   2
+/intel/influxdb/stat/runtime/HeapIdle                    2
+/intel/influxdb/stat/runtime/HeapInUse                   2
+/intel/influxdb/stat/runtime/HeapObjects                 2
+/intel/influxdb/stat/runtime/HeapReleased                2
+/intel/influxdb/stat/runtime/HeapSys                     2
+/intel/influxdb/stat/runtime/Lookups                     2
+/intel/influxdb/stat/runtime/Mallocs                     2
+/intel/influxdb/stat/runtime/NumGC                       2
+/intel/influxdb/stat/runtime/NumGoroutine                2
+/intel/influxdb/stat/runtime/PauseTotalNs                2
+/intel/influxdb/stat/runtime/Sys                         2
+/intel/influxdb/stat/runtime/TotalAlloc                  2
+/intel/influxdb/stat/shard/1/fields_create               2
+/intel/influxdb/stat/shard/1/series_create               2
+/intel/influxdb/stat/shard/1/write_points_ok             2
+/intel/influxdb/stat/shard/1/write_req                   2
+/intel/influxdb/stat/shard/2/fields_create               2
+/intel/influxdb/stat/shard/2/series_create               2
+/intel/influxdb/stat/shard/2/write_points_ok             2
+/intel/influxdb/stat/shard/2/write_req                   2
+/intel/influxdb/stat/write/point_req                     2
+/intel/influxdb/stat/write/point_req_local               2
+/intel/influxdb/stat/write/req                           2
+/intel/influxdb/stat/write/write_ok                      2
 
 ```
 
@@ -357,5 +335,6 @@ Snap, along with this plugin, is an Open Source software released under the Apac
 List authors, co-authors and anyone you'd like to mention
 
 * Author: 	[Izabella Raulin](https://github.com/IzabellaRaulin)
+* Author: 	[Marcin Krolik](https://github.com/marcin-krolik)
 
 **Thank you!** Your contribution is incredibly important to us.
