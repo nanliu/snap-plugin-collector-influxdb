@@ -343,23 +343,6 @@ func TestCollectMetrics(t *testing.T) {
 			So(results, ShouldNotBeEmpty)
 			So(err, ShouldBeNil)
 		})
-
-		Convey("when metrics namespaces contains wildcards", func() {
-
-			mtsWildCards := mockMtsWildCards
-			cfg := getMockMetricConfig()
-
-			// add mocked config to each metric
-			for i := range mtsWildCards {
-				mtsWildCards[i].Config_ = cfg
-			}
-			So(func() { influxdbPlugin.CollectMetrics(mtsWildCards) }, ShouldNotPanic)
-
-			results, err := influxdbPlugin.CollectMetrics(mtsWildCards)
-
-			So(len(results), ShouldEqual, len(mockMts))
-			So(err, ShouldBeNil)
-		})
 	})
 
 }
