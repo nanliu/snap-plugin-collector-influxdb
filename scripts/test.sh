@@ -42,6 +42,9 @@ if [[ $TEST_SUITE == "unit" ]]; then
 	# echo "golint"
 	# golint ./...
 
+	echo "go vet"
+	go vet $VET_DIRS
+
 	# go test -race ./... - Lets disable for now
 
 	# Run test coverage on each subdirectories and merge the coverage profile.
