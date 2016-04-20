@@ -8,6 +8,7 @@ The plugin is used in the [snap framework] (http://github.com/intelsdi-x/snap).
 
 1. [Getting Started](#getting-started)
   * [System Requirements](#system-requirements)
+  * [Operating systems](#operating-systems)
   * [Installation](#installation)
   * [Configuration and Usage](#configuration-and-usage)
 2. [Documentation](#documentation)
@@ -26,6 +27,10 @@ The plugin is used in the [snap framework] (http://github.com/intelsdi-x/snap).
 
 - Linux system
 - InfluxDB (version 0.9 or higher)
+
+### Operating systems
+All OSs currently supported by snap:
+* Linux/amd64
 
 ### Installation
 
@@ -48,7 +53,7 @@ This builds the plugin in `/build/rootfs/`
 ### Configuration and Usage
 
 * Set up the [snap framework](https://github.com/intelsdi-x/snap/blob/master/README.md#getting-started)
-
+* Load the plugin and create a task, see example in [Examples](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/blob/master/README.md#examples).
 
 ## Documentation
 
@@ -72,69 +77,7 @@ Name 	  	| Data Type | Description
 
 ### Collected Metrics
 
-This plugin has the ability to gather:
-
-a) all **diagnostic information** of InfluxDB system itself, represented by the metrics with prefix `/intel/influxdb/diagn/`
-
-b) all **statistical information** of InfluxDB system itself, represented by the metrics with prefix `/intel/influxdb/stat/`
-                                                                                                
-Metric Name | Description
------------- | -------------
-/intel/influxdb/diagn/build/Branch |
-/intel/influxdb/diagn/build/Commit |
-/intel/influxdb/diagn/build/Version |
-/intel/influxdb/diagn/network/hostname |
-/intel/influxdb/diagn/runtime/GOARCH |
-/intel/influxdb/diagn/runtime/GOMAXPROCS |
-/intel/influxdb/diagn/runtime/GOOS |
-/intel/influxdb/diagn/runtime/version |
-/intel/influxdb/diagn/system/PID |
-/intel/influxdb/diagn/system/currentTime |
-/intel/influxdb/diagn/system/started |
-/intel/influxdb/diagn/system/uptime |
-| |
-/intel/influxdb/stat/engine/\<engine_id>/blks_write |
-/intel/influxdb/stat/engine/\<engine_id>/blks_write_bytes |
-/intel/influxdb/stat/engine/\<engine_id>/blks_write_bytes_c |
-/intel/influxdb/stat/engine/\<engine_id>/points_write |
-/intel/influxdb/stat/engine/\<engine_id>/points_write_dedupe |
-/intel/influxdb/stat/httpd/auth_fail |
-/intel/influxdb/stat/httpd/ping_req |
-/intel/influxdb/stat/httpd/points_written_ok |
-/intel/influxdb/stat/httpd/query_req |
-/intel/influxdb/stat/httpd/query_resp_bytes |
-/intel/influxdb/stat/httpd/req |
-/intel/influxdb/stat/httpd/write_req |
-/intel/influxdb/stat/httpd/write_req_bytes |
-/intel/influxdb/stat/runtime/Alloc |
-/intel/influxdb/stat/runtime/Frees |
-/intel/influxdb/stat/runtime/HeapAlloc |
-/intel/influxdb/stat/runtime/HeapIdle |
-/intel/influxdb/stat/runtime/HeapInUse |
-/intel/influxdb/stat/runtime/HeapObjects |
-/intel/influxdb/stat/runtime/HeapReleased |
-/intel/influxdb/stat/runtime/HeapSys |
-/intel/influxdb/stat/runtime/Lookups |
-/intel/influxdb/stat/runtime/Mallocs |
-/intel/influxdb/stat/runtime/NumGC |
-/intel/influxdb/stat/runtime/NumGoroutine |
-/intel/influxdb/stat/runtime/PauseTotalNs |
-/intel/influxdb/stat/runtime/Sys |
-/intel/influxdb/stat/runtime/TotalAlloc |
-/intel/influxdb/stat/shard/\<shard_id>/fields_create |
-/intel/influxdb/stat/shard/\<shard_id>/series_create |
-/intel/influxdb/stat/shard/\<shard_id>/write_points_ok |
-/intel/influxdb/stat/shard/\<shard_id>/write_req |
-/intel/influxdb/stat/write/point_req |
-/intel/influxdb/stat/write/point_req_local |
-/intel/influxdb/stat/write/req |
-/intel/influxdb/stat/write/write_ok |
-
-The list of available metrics might be vary depending on the influxdb version or the system configuration.
-
-Diagnostics information are gathered only once at the beginning of collecting process, because they are constant during running the influxdb process.
-
-In task manifest there are declaration of metrics names which will be collected and value of an interval (see [exemplary task manifest] (examples/tasks/influxdb-file.json)). By default metrics are gathered once per second.
+List of collected metrics is described in [METRICS.md](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/blob/master/METRICS.md).
 
 ### Examples
 
@@ -231,7 +174,7 @@ Signed: false
 Loaded Time: Fri, 26 Feb 2016 09:16:44 UTC
 ```
 
-Create a task JSON file (exemplary file in examples/tasks/influxdb-file.json):  
+Create a task JSON file (exemplary files in [examples/tasks/] (https://github.com/intelsdi-x/snap-plugin-collector-influxdb/blob/master/examples/tasks/)):
 ```json
 
 {
@@ -314,27 +257,23 @@ ID: d4392f17-11f0-4f64-8701-2708f432b50a
 
 There isn't a current roadmap for this plugin, but it is in active development. As we launch this plugin, we do not have any outstanding requirements for the next release.
 
-If you have a feature request, please add it as an [issue](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/issues).
+If you have a feature request, please add it as an [issue](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/issues) and/or submit a [pull request](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/pulls).
 
 ## Community Support
-This repository is one of **many** plugins in the **Snap Framework**: a powerful telemetry agent framework. To reach out on other use cases, visit:
+This repository is one of **many** plugins in the **Snap Framework**: a powerful telemetry agent framework. 
 
-* [Snap Gitter channel] (https://gitter.im/intelsdi-x/snap)
-
-The full project is at http://github.com:intelsdi-x/snap.
+To reach out to other users, head to the [main framework](https://github.com/intelsdi-x/snap#community-support) or visit [snap Gitter channel](https://gitter.im/intelsdi-x/snap).
 
 ## Contributing
 We love contributions!
 
 There's more than one way to give back, from examples to blogs to code updates. See our recommended process in [CONTRIBUTING.md](CONTRIBUTING.md).
 
+And **thank you!** Your contribution, through code and participation, is incredibly important to us.
+
 ## License
 Snap, along with this plugin, is an Open Source software released under the Apache 2.0 [License](LICENSE).
 
 ## Acknowledgements
-List authors, co-authors and anyone you'd like to mention
-
 * Author: 	[Izabella Raulin](https://github.com/IzabellaRaulin)
 * Author: 	[Marcin Krolik](https://github.com/marcin-krolik)
-
-**Thank you!** Your contribution is incredibly important to us.
