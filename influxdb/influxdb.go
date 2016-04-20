@@ -151,7 +151,7 @@ func (ic *InfluxdbCollector) getStatistics() {
 }
 
 // getData executes a command specified by given `type` of desired data
-// and assignes its results to InfluxdbCollector structure item `data`
+// and assigns its results to InfluxdbCollector structure item `data`
 func (ic *InfluxdbCollector) getData(kind int) error {
 	var results dtype.Results
 	var err error
@@ -167,7 +167,7 @@ func (ic *InfluxdbCollector) getData(kind int) error {
 		results, err = ic.service.GetDiagnostics()
 
 	default:
-		err = errors.New("Inalid type of monitoring service")
+		err = errors.New("Invalid type of monitoring service")
 	}
 
 	if err != nil {
@@ -209,7 +209,7 @@ func joinNamespace(ns []string) string {
 	return strings.Join(ns, "/")
 }
 
-//splitNamespace splits namespace (repesented by single string `s`) and returns  a slice of the substrings beetween slash separator
+//splitNamespace splits namespace (repesented by single string `s`) and returns  a slice of the substrings between slash separator
 func splitNamespace(ns string) []string {
 	return strings.Split(ns, "/")
 }
