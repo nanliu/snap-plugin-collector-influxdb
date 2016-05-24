@@ -1,6 +1,10 @@
-#!/bin/bash -e
+#!/bin/bash
 
-GITVERSION=`git describe --always`
+set -e
+set -u
+set -o pipefail
+
+GITVERSION=$(git describe --always)
 SOURCEDIR=$1
 BUILDDIR=$SOURCEDIR/build
 PLUGIN=`echo $SOURCEDIR | grep -oh "snap-.*"`
@@ -24,4 +28,3 @@ mkdir -p $ROOTFS
 echo "Source Dir = $SOURCEDIR"
 echo "Building Snap Plugin: $PLUGIN"
 $BUILDCMD -o $ROOTFS/$PLUGIN
-

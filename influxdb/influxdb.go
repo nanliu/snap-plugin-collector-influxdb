@@ -1,5 +1,3 @@
-// +build linux
-
 /*
 http://www.apache.org/licenses/LICENSE-2.0.txt
 Copyright 2016 Intel Corporation
@@ -199,7 +197,6 @@ func createNamespace(nsType, seriesName, columnName string) string {
 	ns = append(ns, seriesName)
 	ns = append(ns, columnName)
 	return strings.Join(ns, "/")
-
 }
 
 //splitNamespace splits namespace (repesented by single string `s`) and returns  a slice of the substrings between slash separator

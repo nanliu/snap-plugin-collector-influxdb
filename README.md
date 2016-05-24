@@ -3,9 +3,8 @@
 This plugin collects statistical and diagnostic information about each InfluxDB node. This information can be very useful to assist with troubleshooting and performance analysis of the database itself.
 
 This plugin has ability to gather InfluxDB internal system monitoring information in response to the following commands: `SHOW STATS` and `SHOW DIAGNOSTICS`.
-															
-The plugin is used in the [snap framework] (http://github.com/intelsdi-x/snap).				
 
+The plugin is used in the [snap framework] (http://github.com/intelsdi-x/snap).				
 1. [Getting Started](#getting-started)
   * [System Requirements](#system-requirements)
   * [Operating systems](#operating-systems)
@@ -25,10 +24,11 @@ The plugin is used in the [snap framework] (http://github.com/intelsdi-x/snap).
 
 ### System Requirements
 
-- Linux system
+- Linux 64bit system
 - InfluxDB (version 0.9 or higher)
 
 ### Operating systems
+
 All OSs currently supported by snap:
 * Linux/amd64
 
@@ -36,7 +36,7 @@ All OSs currently supported by snap:
 
 #### To build the plugin binary:
 
-Fork https://github.com/intelsdi-x/snap-plugin-collector-influxdb																				
+Fork https://github.com/intelsdi-x/snap-plugin-collector-influxdb
 
 Clone repo into `$GOPATH/src/github.com/intelsdi-x/`:
 
@@ -73,7 +73,6 @@ Name 	  	| Data Type | Description
 "port" 		| int	 	| port of InfluxDB http API (by default 8086)
 "user" 		| string 	| user name
 "password" 	| string 	| user password
-
 
 ### Collected Metrics
 
@@ -176,33 +175,32 @@ Loaded Time: Fri, 26 Feb 2016 09:16:44 UTC
 
 Create a task JSON file (exemplary files in [examples/tasks/] (https://github.com/intelsdi-x/snap-plugin-collector-influxdb/blob/master/examples/tasks/)):
 ```json
-
 {
-    "version": 1,
+  "version": 1,
     "schedule": {
-        "type": "simple",
-        "interval": "1s"
+      "type": "simple",
+      "interval": "1s"
     },
     "workflow": {
-        "collect": {
-            "metrics": {
-                "/intel/influxdb/stat/httpd/*": {},
-				"/intel/influxdb/stat/write/*": {},
-				"/intel/influxdb/stat/runtime/Alloc": {},
-				"/intel/influxdb/stat/runtime/Frees": {},
-				"/intel/influxdb/diagn/system/PID" : {}
-            },
-            "config": {},
-            "process": null,
-            "publish": [
-                {
-                    "plugin_name": "file",
-                    "config": {
-                        "file": "/tmp/published_influxdb_internal_monitoring"
-                    }
-                }
-            ]
+      "collect": {
+        "metrics": {
+          "/intel/influxdb/stat/httpd/*": {},
+          "/intel/influxdb/stat/write/*": {},
+          "/intel/influxdb/stat/runtime/Alloc": {},
+          "/intel/influxdb/stat/runtime/Frees": {},
+          "/intel/influxdb/diagn/system/PID" : {}
+        },
+        "config": {},
+        "process": null,
+        "publish": [
+        {
+          "plugin_name": "file",
+          "config": {
+            "file": "/tmp/published_influxdb_internal_monitoring"
+          }
         }
+        ]
+      }
     }
 }
 ```

@@ -1,10 +1,16 @@
+// +build small
+
 /*
 http://www.apache.org/licenses/LICENSE-2.0.txt
+
 Copyright 2016 Intel Corporation
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
+
     http://www.apache.org/licenses/LICENSE-2.0
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,13 +18,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package dtype
+package main
 
-// Results represents InfluxDB Monitoring results
-type Results map[string]*Series
+import (
+	"os"
+	"testing"
 
-// Series represents InfluxDB Monitoring series
-type Series struct {
-	Data map[string]interface{}
-	Tags map[string]string
+	. "github.com/smartystreets/goconvey/convey"
+)
+
+func TestMain(t *testing.T) {
+	Convey("ensure plugin loads and responds", t, func() {
+		os.Args = []string{"", "{\"NoDaemon\": true}"}
+		So(func() { main() }, ShouldNotPanic)
+	})
 }
