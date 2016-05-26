@@ -93,7 +93,7 @@ Load snap influxdb collector plugin:
 $ snapctl plugin load $SNAP_INFLUXDB_COLLECTOR_PLUGIN_DIR/build/rootfs/snap-plugin-collector-influxdb
 Plugin loaded
 Name: influxdb
-Version: 2
+Version: 4
 Type: collector
 Signed: false
 Loaded Time: Fri, 26 Feb 2016 09:09:03 UTC
@@ -168,7 +168,7 @@ Load file plugin for publishing:
 $ snapctl plugin load $SNAP_DIR/build/plugin/snap-publisher-file
 Plugin loaded
 Name: file
-Version: 3
+Version: 4
 Type: publisher
 Signed: false
 Loaded Time: Fri, 26 Feb 2016 09:16:44 UTC

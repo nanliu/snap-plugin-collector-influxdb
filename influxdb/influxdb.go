@@ -25,6 +25,7 @@ import (
 
 	"github.com/intelsdi-x/snap/control/plugin"
 	"github.com/intelsdi-x/snap/control/plugin/cpolicy"
+	"github.com/intelsdi-x/snap/core"
 
 	"github.com/intelsdi-x/snap-plugin-collector-influxdb/influxdb/dtype"
 	"github.com/intelsdi-x/snap-plugin-collector-influxdb/influxdb/monitor"
@@ -35,7 +36,7 @@ const (
 	// Name of plugin
 	Name = "influxdb"
 	// Version of plugin
-	Version = 2
+	Version = 4
 	// Type of plugin
 	Type = plugin.CollectorPluginType
 
@@ -78,24 +79,23 @@ func (ic *InfluxdbCollector) GetConfigPolicy() (*cpolicy.ConfigPolicy, error) {
 }
 
 // GetMetricTypes returns list of metrics based on influxDB system monitoring
-func (ic *InfluxdbCollector) GetMetricTypes(cfg plugin.PluginConfigType) ([]plugin.PluginMetricType, error) {
-	mts := []plugin.PluginMetricType{}
+func (ic *InfluxdbCollector) GetMetricTypes(cfg plugin.ConfigType) ([]plugin.MetricType, error) {
+	mts := []plugin.MetricType{}
 
 	ic.init(cfg)
 	ic.getStatistics()  // get statistical information about influxDB
 	ic.getDiagnostics() // get diagnostic information about influxDB
 
 	for ns, dat := range ic.data {
-		mts = append(mts, plugin.PluginMetricType{Namespace_: splitNamespace(ns), Tags_: dat.tags})
+		mts = append(mts, plugin.MetricType{Namespace_: core.NewNamespace(splitNamespace(ns)...), Tags_: dat.tags})
 	}
 
 	return mts, nil
 }
 
 // CollectMetrics collects given metrics
-func (ic *InfluxdbCollector) CollectMetrics(mts []plugin.PluginMetricType) ([]plugin.PluginMetricType, error) {
-	metrics := []plugin.PluginMetricType{}
-	hostname, _ := os.Hostname()
+func (ic *InfluxdbCollector) CollectMetrics(mts []plugin.MetricType) ([]plugin.MetricType, error) {
+	metrics := []plugin.MetricType{}
 
 	if !ic.initialized {
 		ic.init(mts[0])     // if CollectMetrics() is called, mts has one item at least
@@ -105,11 +105,10 @@ func (ic *InfluxdbCollector) CollectMetrics(mts []plugin.PluginMetricType) ([]pl
 	ic.getStatistics() // get statistical information
 
 	for _, m := range mts {
-		if dat, ok := ic.data[joinNamespace(m.Namespace())]; ok {
-			metric := plugin.PluginMetricType{
+		if dat, ok := ic.data[strings.TrimLeft(m.Namespace().String(), "/")]; ok {
+			metric := plugin.MetricType{
 				Namespace_: m.Namespace(),
 				Data_:      dat.value,
-				Source_:    hostname,
 				Timestamp_: time.Now(),
 				Tags_:      dat.tags,
 			}
@@ -123,8 +122,7 @@ func (ic *InfluxdbCollector) CollectMetrics(mts []plugin.PluginMetricType) ([]pl
 
 // init initializes InfluxdbCollector instance based on config `cfg`
 func (ic *InfluxdbCollector) init(cfg interface{}) {
-	items := []string{"host", "port", "user", "password"}
-	settings, err := config.GetConfigItems(cfg, items)
+	settings, err := config.GetConfigItems(cfg, "host", "port", "user", "password")
 	handleErr(err)
 
 	err = ic.service.InitURLs(settings)
@@ -202,11 +200,6 @@ func createNamespace(nsType, seriesName, columnName string) string {
 	ns = append(ns, columnName)
 	return strings.Join(ns, "/")
 
-}
-
-// joinNamespace concatenates the elements of `ns` to create a single string combined by slash
-func joinNamespace(ns []string) string {
-	return strings.Join(ns, "/")
 }
 
 //splitNamespace splits namespace (repesented by single string `s`) and returns  a slice of the substrings between slash separator

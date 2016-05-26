@@ -23,6 +23,7 @@ import (
 	"github.com/intelsdi-x/snap-plugin-collector-influxdb/influxdb/dtype"
 
 	"github.com/intelsdi-x/snap/control/plugin"
+	"github.com/intelsdi-x/snap/core"
 	"github.com/intelsdi-x/snap/core/cdata"
 	"github.com/intelsdi-x/snap/core/ctypes"
 
@@ -85,24 +86,24 @@ var mockDiagn = dtype.Results{
 	},
 }
 
-var mockMtsStat = []plugin.PluginMetricType{
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "stat", "shard", "1", "columnA"}},
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "stat", "shard", "1", "columnB"}},
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "stat", "shard", "1", "columnC"}},
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "stat", "httpd", "columnA"}},
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "stat", "httpd", "columnB"}},
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "stat", "httpd", "columnC"}},
+var mockMtsStat = []plugin.MetricType{
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "stat", "shard", "1", "columnA")},
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "stat", "shard", "1", "columnB")},
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "stat", "shard", "1", "columnC")},
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "stat", "httpd", "columnA")},
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "stat", "httpd", "columnB")},
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "stat", "httpd", "columnC")},
 }
 
-var mockMtsDiagn = []plugin.PluginMetricType{
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "diagn", "build", "columnA"}},
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "diagn", "build", "columnB"}},
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "diagn", "build", "columnC"}},
+var mockMtsDiagn = []plugin.MetricType{
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "diagn", "build", "columnA")},
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "diagn", "build", "columnB")},
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "diagn", "build", "columnC")},
 }
 
-var mockMtsWildCards = []plugin.PluginMetricType{
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "diagn", "*"}},
-	plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "stat", "*"}},
+var mockMtsWildCards = []plugin.MetricType{
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "diagn", "*")},
+	plugin.MetricType{Namespace_: core.NewNamespace("intel", "influxdb", "stat", "*")},
 }
 
 // Mts is a mocked metrics, both statistical and diagnostic
@@ -294,9 +295,10 @@ func TestCollectMetrics(t *testing.T) {
 		mc.On("GetDiagnostics").Return(mockDiagn, nil)
 
 		Convey("when series type is unknown", func() {
-			mtsInvalid := []plugin.PluginMetricType{
-				plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "unknown", "shard", "1", "columnA"},
-					Config_: cfg,
+			mtsInvalid := []plugin.MetricType{
+				plugin.MetricType{
+					Namespace_: core.NewNamespace("intel", "influxdb", "unknown", "shard", "1", "columnA"),
+					Config_:    cfg,
 				},
 			}
 
@@ -309,9 +311,10 @@ func TestCollectMetrics(t *testing.T) {
 		})
 
 		Convey("when series name is empty", func() {
-			mtsInvalid := []plugin.PluginMetricType{
-				plugin.PluginMetricType{Namespace_: []string{"intel", "influxdb", "stats", ""},
-					Config_: cfg,
+			mtsInvalid := []plugin.MetricType{
+				plugin.MetricType{
+					Namespace_: core.NewNamespace("intel", "influxdb", "stats", ""),
+					Config_:    cfg,
 				},
 			}
 			So(func() { influxdbPlugin.CollectMetrics(mtsInvalid) }, ShouldNotPanic)
@@ -347,7 +350,7 @@ func TestCollectMetrics(t *testing.T) {
 
 }
 
-func getMockPluginConfig() plugin.PluginConfigType {
+func getMockPluginConfig() plugin.ConfigType {
 	// mocking global config
 	cfg := plugin.NewPluginConfigType()
 	cfg.AddItem("host", ctypes.ConfigValueStr{Value: "hostname"})
@@ -369,7 +372,7 @@ func getMockMetricConfig() *cdata.ConfigDataNode {
 	return cfg
 }
 
-func getMockMetricsConfigured() []plugin.PluginMetricType {
+func getMockMetricsConfigured() []plugin.MetricType {
 	mts := mockMts
 	cfg := getMockMetricConfig()
 
