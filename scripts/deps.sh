@@ -39,17 +39,17 @@ restore_go_dep() {
   _info "restoring dependency with ${_dep}"
   case $_dep in
     godep)
-      godep restore
+      (cd "${__proj_dir}" && godep restore)
       ;;
     glide)
-      glide install
+      (cd "${__proj_dir}" && glide install)
       ;;
     govendor)
-      govendor sync
+      (cd "${__proj_dir}" && govendor sync)
       ;;
   esac
 }
 
-detect_go_dep
+_dep=$(detect_go_dep)
 install_go_dep
 restore_go_dep
