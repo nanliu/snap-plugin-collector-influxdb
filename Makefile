@@ -23,10 +23,14 @@ deps:
 	bash -c "./scripts/deps.sh"
 test:
 	bash -c "./scripts/test.sh $(TEST_TYPE)"
+test-legacy:
+	bash -c "true"
 test-small:
 	bash -c "./scripts/test.sh small"
 test-medium:
 	bash -c "./scripts/test.sh medium"
+test-large:
+	bash -c "./scripts/test.sh large"
 check:
 	$(MAKE) test
 all:
