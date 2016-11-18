@@ -1,10 +1,10 @@
-# snap collector plugin - influxdb
+# Snap collector plugin - influxdb
 
 This plugin collects statistical and diagnostic information about each InfluxDB node. This information can be very useful to assist with troubleshooting and performance analysis of the database itself.
 
 This plugin has ability to gather InfluxDB internal system monitoring information in response to the following commands: `SHOW STATS` and `SHOW DIAGNOSTICS`.
 
-The plugin is used in the [snap framework] (http://github.com/intelsdi-x/snap).				
+The plugin is used in the [Snap framework] (http://github.com/intelsdi-x/snap).				
 1. [Getting Started](#getting-started)
   * [System Requirements](#system-requirements)
   * [Operating systems](#operating-systems)
@@ -29,31 +29,33 @@ The plugin is used in the [snap framework] (http://github.com/intelsdi-x/snap).
 
 ### Operating systems
 
-All OSs currently supported by snap:
+All OSs currently supported by Snap:
 * Linux/amd64
 
 ### Installation
+#### Download the plugin binary:
+
+You can get the pre-built binaries for your OS and architecture from the plugin's [GitHub Releases](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/releases) page. Download the plugin from the latest release and load it into `snapd` (`/opt/snap/plugins` is the default location for Snap packages).
 
 #### To build the plugin binary:
 
 Fork https://github.com/intelsdi-x/snap-plugin-collector-influxdb
-
 Clone repo into `$GOPATH/src/github.com/intelsdi-x/`:
 
 ```
 $ git clone https://github.com/<yourGithubID>/snap-plugin-collector-influxdb.git
 ```
 
-Build the snap influxdb collector plugin by running make within the cloned repo:
+Build the Snap influxdb plugin by running make within the cloned repo:
 ```
 $ make
 ```
-This builds the plugin in `/build/rootfs/`
+This builds the plugin in `./build/`
 
 ### Configuration and Usage
 
-* Set up the [snap framework](https://github.com/intelsdi-x/snap/blob/master/README.md#getting-started)
-* Load the plugin and create a task, see example in [Examples](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/blob/master/README.md#examples).
+* Set up the [Snap framework](https://github.com/intelsdi-x/snap#getting-started)
+* Load the plugin and create a task, see example in [Examples](#examples).
 
 ## Documentation
 
@@ -65,7 +67,7 @@ To learn more about influxDB System Monitoring, visit:
 
 ### Global Config
 
-Global configuration file is described in snap's documentation. For this plugin section "influxdb" in "collector" specifing the following options needs to be added (see [exemplary configs file](examples/configs/snap-config-sample.json)):
+Global configuration file is described in Snap's documentation. For this plugin section "influxdb" in "collector" specifing the following options needs to be added (see [exemplary configs file](examples/configs/snap-config-sample.json)):
 
 Name 	  	| Data Type | Description
 ------------|-----------|-----------------------
@@ -76,28 +78,29 @@ Name 	  	| Data Type | Description
 
 ### Collected Metrics
 
-List of collected metrics is described in [METRICS.md](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/blob/master/METRICS.md).
+List of collected metrics is described in [METRICS.md](METRICS.md).
 
 ### Examples
 
-Example of running snap influxdb collector and writing data to file.
+Example of running Snap influxdb collector and writing data to file.
+Download an [example Snap global config](examples/configs/snap-config-sample.json) file.
+```
+$ curl -sfLO https://raw.githubusercontent.com/intelsdi-x/snap-plugin-collector-influxdb/master/examples/configs/snap-config-sample.json
+```
+Ensure [Snap daemon is running](https://github.com/intelsdi-x/snap#running-snap) with provided configuration file:
+* command line: `snapd -l 1 -t 0 --config snap-config-sample.json&`
 
-Run the snap daemon:
+Download and load Snap plugins:
 ```
-$ snapd -l 1 -t 0 --config $SNAP_INFLUXDB_COLLECTOR_PLUGIN_DIR/examples/configs/snap-config-sample.json
+$ wget http://snap.ci.snap-telemetry.io/plugins/snap-plugin-collector-influxdb/latest/linux/x86_64/snap-plugin-collector-influxdb
+$ wget http://snap.ci.snap-telemetry.io/plugins/snap-plugin-publisher-file/latest/linux/x86_64/snap-plugin-publisher-file
+$ chmod 755 snap-plugin-*
+$ snapctl plugin load snap-plugin-collector-influxdb
+$ snapctl plugin load snap-plugin-publisher-file
 ```
 
-Load snap influxdb collector plugin:
-```
-$ snapctl plugin load $SNAP_INFLUXDB_COLLECTOR_PLUGIN_DIR/build/rootfs/snap-plugin-collector-influxdb
-Plugin loaded
-Name: influxdb
-Version: 4
-Type: collector
-Signed: false
-Loaded Time: Fri, 26 Feb 2016 09:09:03 UTC
-```
 See all available metrics:
+
 ```
 $ snapctl metric list
 
@@ -159,68 +162,23 @@ NAMESPACE                                                VERSIONS
 /intel/influxdb/stat/write/point_req_local               2
 /intel/influxdb/stat/write/req                           2
 /intel/influxdb/stat/write/write_ok                      2
-
 ```
 
-Load file plugin for publishing:
+Download an [example task file](examples/tasks/influxdb-file.json) and load it:
 ```
-$ snapctl plugin load $SNAP_DIR/build/plugin/snap-publisher-file
-Plugin loaded
-Name: file
-Version: 4
-Type: publisher
-Signed: false
-Loaded Time: Fri, 26 Feb 2016 09:16:44 UTC
-```
-
-Create a task JSON file (exemplary files in [examples/tasks/] (https://github.com/intelsdi-x/snap-plugin-collector-influxdb/blob/master/examples/tasks/)):
-```json
-{
-  "version": 1,
-    "schedule": {
-      "type": "simple",
-      "interval": "1s"
-    },
-    "workflow": {
-      "collect": {
-        "metrics": {
-          "/intel/influxdb/stat/httpd/*": {},
-          "/intel/influxdb/stat/write/*": {},
-          "/intel/influxdb/stat/runtime/Alloc": {},
-          "/intel/influxdb/stat/runtime/Frees": {},
-          "/intel/influxdb/diagn/system/PID" : {}
-        },
-        "config": {},
-        "process": null,
-        "publish": [
-        {
-          "plugin_name": "file",
-          "config": {
-            "file": "/tmp/published_influxdb_internal_monitoring"
-          }
-        }
-        ]
-      }
-    }
-}
-```
-
-Create a task:
-```
-$ snapctl task create -t $SNAP_INFLUXDB_COLLECTOR_PLUGIN_DIR/examples/tasks/influxdb-file.json
+$ curl -sfLO https://raw.githubusercontent.com/intelsdi-x/snap-plugin-collector-influxdb/master/examples/tasks/influxdb-file.json
+$ snapctl task create -t influxdb-file.json
 Using task manifest to create task
 Task created
-ID: d4392f17-11f0-4f64-8701-2708f432b50a
-Name: Task-d4392f17-11f0-4f64-8701-2708f432b50a
+ID: 02dd7ff4-8106-47e9-8b86-70067cd0a850
+Name: Task-02dd7ff4-8106-47e9-8b86-70067cd0a850
 State: Running
 ```
 
-See sample output from `snapctl task watch <task_id>`
-
+See realtime output from `snapctl task watch <task_id>` (CTRL+C to exit)
 ```
-$ snapctl task watch d4392f17-11f0-4f64-8701-2708f432b50a
-
-Watching Task (d4392f17-11f0-4f64-8701-2708f432b50a):
+$ snapctl task watch 02dd7ff4-8106-47e9-8b86-70067cd0a850
+Watching Task (02dd7ff4-8106-47e9-8b86-70067cd0a850):
 NAMESPACE                                        DATA                    TIMESTAMP                                       SOURCE
 /intel/influxdb/diagn/system/PID                 16191                   2016-02-26 09:25:47.353886681 +0000 UTC         node-25.domain.tld
 /intel/influxdb/stat/httpd/auth_fail             63                      2016-02-26 09:25:47.354068464 +0000 UTC         node-25.domain.tld
@@ -237,18 +195,15 @@ NAMESPACE                                        DATA                    TIMESTA
 /intel/influxdb/stat/write/point_req_local       6.82720753e+08          2016-02-26 09:25:47.354619612 +0000 UTC         node-25.domain.tld
 /intel/influxdb/stat/write/req                   7.000631e+06            2016-02-26 09:25:47.354624219 +0000 UTC         node-25.domain.tld
 /intel/influxdb/stat/write/write_ok              7.000823e+06            2016-02-26 09:25:47.354609029 +0000 UTC         node-25.domain.tld
-
 ```
-(Keys `ctrl+c` terminate task watcher)
 
-
-These data are published to file and stored there (in this example in /tmp/published_influxdb_internal_monitoring).
+This data is published to a file `/tmp/published_influxdb_internal_monitoring` per task specification
 
 Stop task:
 ```
-$ snapctl task stop d4392f17-11f0-4f64-8701-2708f432b50a
+$ snapctl task stop 02dd7ff4-8106-47e9-8b86-70067cd0a850
 Task stopped:
-ID: d4392f17-11f0-4f64-8701-2708f432b50a
+ID: 02dd7ff4-8106-47e9-8b86-70067cd0a850
 ```
 
 ### Roadmap
@@ -258,16 +213,14 @@ There isn't a current roadmap for this plugin, but it is in active development. 
 If you have a feature request, please add it as an [issue](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/issues) and/or submit a [pull request](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/pulls).
 
 ## Community Support
-This repository is one of **many** plugins in the **Snap Framework**: a powerful telemetry agent framework. 
+This repository is one of **many** plugins in **Snap**, a powerful telemetry framework. See the full project at http://github.com/intelsdi-x/snap.
 
-To reach out to other users, head to the [main framework](https://github.com/intelsdi-x/snap#community-support) or visit [snap Gitter channel](https://gitter.im/intelsdi-x/snap).
+To reach out to other users, head to the [main framework](https://github.com/intelsdi-x/snap#community-support).
 
 ## Contributing
 We love contributions!
 
 There's more than one way to give back, from examples to blogs to code updates. See our recommended process in [CONTRIBUTING.md](CONTRIBUTING.md).
-
-And **thank you!** Your contribution, through code and participation, is incredibly important to us.
 
 ## License
 Snap, along with this plugin, is an Open Source software released under the Apache 2.0 [License](LICENSE).
