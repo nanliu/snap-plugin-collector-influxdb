@@ -35,7 +35,7 @@ All OSs currently supported by Snap:
 ### Installation
 #### Download the plugin binary:
 
-You can get the pre-built binaries for your OS and architecture from the plugin's [GitHub Releases](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/releases) page. Download the plugin from the latest release and load it into `snapd` (`/opt/snap/plugins` is the default location for Snap packages).
+You can get the pre-built binaries for your OS and architecture from the plugin's [GitHub Releases](https://github.com/intelsdi-x/snap-plugin-collector-influxdb/releases) page. Download the plugin from the latest release and load it into `snapteld` (`/opt/snap/plugins` is the default location for Snap packages).
 
 #### To build the plugin binary:
 
@@ -88,21 +88,21 @@ Download an [example Snap global config](examples/configs/snap-config-sample.jso
 $ curl -sfLO https://raw.githubusercontent.com/intelsdi-x/snap-plugin-collector-influxdb/master/examples/configs/snap-config-sample.json
 ```
 Ensure [Snap daemon is running](https://github.com/intelsdi-x/snap#running-snap) with provided configuration file:
-* command line: `snapd -l 1 -t 0 --config snap-config-sample.json&`
+* command line: `snapteld -l 1 -t 0 --config snap-config-sample.json&`
 
 Download and load Snap plugins:
 ```
 $ wget http://snap.ci.snap-telemetry.io/plugins/snap-plugin-collector-influxdb/latest/linux/x86_64/snap-plugin-collector-influxdb
 $ wget http://snap.ci.snap-telemetry.io/plugins/snap-plugin-publisher-file/latest/linux/x86_64/snap-plugin-publisher-file
 $ chmod 755 snap-plugin-*
-$ snapctl plugin load snap-plugin-collector-influxdb
-$ snapctl plugin load snap-plugin-publisher-file
+$ snaptel plugin load snap-plugin-collector-influxdb
+$ snaptel plugin load snap-plugin-publisher-file
 ```
 
 See all available metrics:
 
 ```
-$ snapctl metric list
+$ snaptel metric list
 
 NAMESPACE                                                VERSIONS
 /intel/influxdb/diagn/build/Branch                       2
@@ -167,7 +167,7 @@ NAMESPACE                                                VERSIONS
 Download an [example task file](examples/tasks/influxdb-file.json) and load it:
 ```
 $ curl -sfLO https://raw.githubusercontent.com/intelsdi-x/snap-plugin-collector-influxdb/master/examples/tasks/influxdb-file.json
-$ snapctl task create -t influxdb-file.json
+$ snaptel task create -t influxdb-file.json
 Using task manifest to create task
 Task created
 ID: 02dd7ff4-8106-47e9-8b86-70067cd0a850
@@ -175,9 +175,9 @@ Name: Task-02dd7ff4-8106-47e9-8b86-70067cd0a850
 State: Running
 ```
 
-See realtime output from `snapctl task watch <task_id>` (CTRL+C to exit)
+See realtime output from `snaptel task watch <task_id>` (CTRL+C to exit)
 ```
-$ snapctl task watch 02dd7ff4-8106-47e9-8b86-70067cd0a850
+$ snaptel task watch 02dd7ff4-8106-47e9-8b86-70067cd0a850
 Watching Task (02dd7ff4-8106-47e9-8b86-70067cd0a850):
 NAMESPACE                                        DATA                    TIMESTAMP                                       SOURCE
 /intel/influxdb/diagn/system/PID                 16191                   2016-02-26 09:25:47.353886681 +0000 UTC         node-25.domain.tld
@@ -201,7 +201,7 @@ This data is published to a file `/tmp/published_influxdb_internal_monitoring` p
 
 Stop task:
 ```
-$ snapctl task stop 02dd7ff4-8106-47e9-8b86-70067cd0a850
+$ snaptel task stop 02dd7ff4-8106-47e9-8b86-70067cd0a850
 Task stopped:
 ID: 02dd7ff4-8106-47e9-8b86-70067cd0a850
 ```
